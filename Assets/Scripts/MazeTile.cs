@@ -1,29 +1,29 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
+/// <summary>
+/// This is a class for maze tiles.
+/// </summary>
 public class MazeTile : MonoBehaviour {
 
-	public Transform wallParent;
 
 	/// <summary>
 	/// list of walls of the tile
 	/// </summary>
-	public List<GameObject> walls;
+	public GameObject[] walls;
 
 	/// <summary>
-	/// Awake is called when the script instance is being loaded.
+	/// The coordinate of the tile.
 	/// </summary>
-	void Awake() {
-		walls = new List<GameObject>();
-	}
+	public Coordinate coord;
 
 	/// <summary>
-	/// Adds a wall of the tile
+	/// Breaks a wall in the input direction.
 	/// </summary>
-	/// <param name="wall"></param>
-	public void AddWall(GameObject wall) {
-		walls.Add(wall);
-
-		wall.transform.SetParent(wallParent, false);
+	/// <param name="index">The direction of the wall to break</param>
+	public void BreakWall(int index) {
+		if (walls[index] != null) {
+			Destroy(walls[index]);
+		} else {
+			Debug.Log("Tried to destroy a nonexistent wall");
+		}
 	}
 }
