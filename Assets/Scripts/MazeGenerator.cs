@@ -82,7 +82,6 @@ public class MazeGenerator : MonoBehaviour {
 
 		// Initialize DFS
 		tileStack.Push(_tiles[random.Next(0, mazeSize), random.Next(0, mazeSize)]);
-		MazeTile startingTile = tileStack.Peek();
 
 		// Continue exploring paths until there are none remaining
 		while (tileStack.Count > 0) {
