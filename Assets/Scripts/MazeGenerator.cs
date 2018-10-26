@@ -1,6 +1,7 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 /// <summary>
 /// This is a class for maze generation.
@@ -37,10 +38,14 @@ public class MazeGenerator : MonoBehaviour {
 	void Start() {
 		_tiles = new MazeTile[mazeSize, mazeSize];
 
-		CreateMaze();
+		StartCoroutine(CreateMaze());
 	}
 
-	public void CreateMaze() {
+	/// <summary>
+	/// Creates a maze
+	/// </summary>
+	/// <returns></returns>
+	public IEnumerator CreateMaze() {
 		currentMaze = Instantiate(mazeParentPrefab);
 
 		// Create the maze
@@ -50,6 +55,12 @@ public class MazeGenerator : MonoBehaviour {
 		// Starting and exit points
 		_tiles[0, 0].BreakWall(2);
 		_tiles[mazeSize - 1, mazeSize - 1].BreakWall(0);
+
+		// wait 1 frame for colliders to update
+		yield return new WaitForEndOfFrame();
+
+		// build nav mesh
+		currentMaze.GetComponent<NavMeshSurface>().BuildNavMesh();
 	}
 
 	/// <summary>
