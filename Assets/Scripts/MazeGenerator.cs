@@ -52,6 +52,9 @@ public class MazeGenerator : MonoBehaviour {
 		FillMaze();
 		GeneratePath();
 
+		// remoe extra walls
+		RemoveExtraWalls();
+
 		// Starting and exit points
 		_tiles[0, 0].BreakWall(2);
 		_tiles[mazeSize - 1, mazeSize - 1].BreakWall(0);
@@ -110,7 +113,7 @@ public class MazeGenerator : MonoBehaviour {
 				c = currentTile.coord + Coordinate.GetCoordinate(direction);
 				
 				// check bounds
-				if (c.x < 0 || c.z < 0 || c.x >= mazeSize || c.z >= mazeSize) {
+				if (OutOfBounds(c)) {
 					direction = (direction + 1) % 4;
 					continue;
 				}
@@ -139,5 +142,52 @@ public class MazeGenerator : MonoBehaviour {
 				tileStack.Pop();
 			}
 		}
+	}
+
+	/// <summary>
+	/// Removes extra walls in the maze tiles
+	/// </summary>
+	private void RemoveExtraWalls() {
+		// check board pattern
+		for (int x = 0; x < mazeSize; x++) {
+			for (int z = 0; z < mazeSize; z++) {
+				MazeTile tile = _tiles[x, z];
+
+				// perform for all walls
+				for (int dir = 0; dir < 4; dir++) {
+					Coordinate coordDir = Coordinate.GetCoordinate(dir);
+					Coordinate coord = tile.coord + coordDir;
+
+					// check if coordinate points out of bounds
+					if (OutOfBounds(coord)) {
+						continue;
+					}
+
+					// no wall to break;
+					if (tile.walls[dir] == null) {
+						continue;
+					}
+
+					MazeTile neighbour = _tiles[coord.x, coord.z];
+
+					// check other wall
+					if (neighbour.walls[(dir + 2) % 4] == null) {
+						continue;
+					}
+
+					// remove one wall because there are two
+					tile.BreakWall(dir);
+				}
+			}
+		}
+	}
+
+	/// <summary>
+	/// Checks if the coordinate is out of bounds
+	/// </summary>
+	/// <param name="coord"></param>
+	/// <returns></returns>
+	private bool OutOfBounds(Coordinate c) {
+		return c.x < 0 || c.z < 0 || c.x >= mazeSize || c.z >= mazeSize;
 	}
 }
