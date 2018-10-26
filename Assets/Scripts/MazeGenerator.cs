@@ -14,7 +14,14 @@ public class MazeGenerator : MonoBehaviour {
 	/// </summary>
 	public GameObject tilePrefab;
 
+	/// <summary>
+	/// Prefab of the parent for the maze
+	/// </summary>
+	public GameObject mazeParentPrefab;
+
 	[Header("Others")]
+
+	public GameObject currentMaze;
 
 	/// <summary>
 	/// Size of the maze
@@ -22,13 +29,20 @@ public class MazeGenerator : MonoBehaviour {
 	public int mazeSize;
 
 	private MazeTile[,] _tiles;
+
 	/// <summary>
 	/// Start is called on the frame when a script is enabled just before
 	/// any of the Update methods is called the first time.
 	/// </summary>
 	void Start() {
 		_tiles = new MazeTile[mazeSize, mazeSize];
-		
+
+		CreateMaze();
+	}
+
+	public void CreateMaze() {
+		currentMaze = Instantiate(mazeParentPrefab);
+
 		// Create the maze
 		FillMaze();
 		GeneratePath();
@@ -42,13 +56,13 @@ public class MazeGenerator : MonoBehaviour {
 	/// Fills the maze with tiles.
 	/// Each tile will already be surrounded with 4 walls.
 	/// </summary>
-	public void FillMaze() {
+	private void FillMaze() {
 		float tileWidth = tilePrefab.transform.localScale.x * 2;
 		float tileLength = tilePrefab.transform.localScale.z * 2;
 
 		for (int i = 0; i < mazeSize; i++) {
 			for (int j = 0; j < mazeSize; j++) {
-				_tiles[i,j] = Instantiate(tilePrefab).GetComponent<MazeTile>();
+				_tiles[i,j] = Instantiate(tilePrefab, currentMaze.transform).GetComponent<MazeTile>();
 				// Set the coordinates here
 				_tiles[i,j].coord = new Coordinate(i, j);
 
@@ -60,7 +74,7 @@ public class MazeGenerator : MonoBehaviour {
 	/// <summary>
 	/// Generates the maze path using DFS algorithm.
 	/// </summary>
-	public void GeneratePath() {
+	private void GeneratePath() {
 		// Variables for DFS
 		Stack<MazeTile> tileStack = new Stack<MazeTile>();
 		bool[,] visited = new bool[mazeSize, mazeSize];
