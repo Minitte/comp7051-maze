@@ -52,9 +52,6 @@ public class MazeGenerator : MonoBehaviour {
 		FillMaze();
 		GeneratePath();
 
-		// remoe extra walls
-		RemoveExtraWalls();
-
 		// Starting and exit points
 		_tiles[0, 0].BreakWall(2);
 		_tiles[mazeSize - 1, mazeSize - 1].BreakWall(0);
