@@ -98,10 +98,31 @@ public class Player : MonoBehaviour {
             vertRotation = Input.GetAxis("Mouse Y");
         }
         
-        // Rotate the player horizontally
+        // Apply rotations
         transform.Rotate(new Vector3(0f, horzRotation, 0f) * lookSensitivity);
+        TiltCamera(vertRotation);
+    }
 
-        // Tilt the camera
-        _camera.Rotate(new Vector3(-vertRotation, 0f, 0f) * lookSensitivity);
+    /// <summary>
+    /// Tilts the camera up or down.
+    /// </summary>
+    /// <param name="tiltDegrees">The amount to tilt the camera by in degrees</param>
+    private void TiltCamera(float tiltDegrees) {
+        // Camera rotation after tilting it
+        Vector3 newRotation = _camera.eulerAngles + (new Vector3(-tiltDegrees, 0f, 0f) * lookSensitivity);
+
+        // The x value of the rotation normalized around 180 degrees 
+        float newRotationX = newRotation.x > 180f ? newRotation.x - 360f : newRotation.x;
+
+        // Clamp the rotation so that the player can't look too far up or down
+        if (newRotationX > 60f) {
+            newRotation.x = 60f;
+        }
+        if (newRotationX < -30f) {
+            newRotation.x = 330f;
+        }
+
+        // Apply rotation to the camera
+        _camera.rotation = Quaternion.Euler(newRotation);
     }
 }
