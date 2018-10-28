@@ -13,6 +13,11 @@ public class Enemy : MonoBehaviour {
 	public AggroArea aggroArea;
 
 	/// <summary>
+	/// Delay for reactions
+	/// </summary>
+	public float reactionDelay;
+
+	/// <summary>
 	/// nav agent 
 	/// </summary>
 	private NavMeshAgent _agent;	
@@ -21,6 +26,8 @@ public class Enemy : MonoBehaviour {
 	/// target to chase
 	/// </summary>
 	private GameObject _target;	
+
+	private float _time;
 
 	/// <summary>
 	/// Awake is called when the script instance is being loaded.
@@ -38,7 +45,13 @@ public class Enemy : MonoBehaviour {
 	/// </summary>
 	void LateUpdate() {
 		if (_target != null) {
+			_time += Time.deltaTime;
+
+			if (_time > reactionDelay) {
+			_time = 0;
+
 			_agent.SetDestination(_target.transform.position);
+			}
 		}
 	}
 
@@ -48,6 +61,7 @@ public class Enemy : MonoBehaviour {
 	/// <param name="target"></param>
 	public void Chase(GameObject target) {
 		_target = target;
+		_agent.SetDestination(_target.transform.position);
 	}
 
 	/// <summary>

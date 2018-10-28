@@ -35,13 +35,8 @@ public class AggroArea : MonoBehaviour {
 	/// </summary>
 	void Update() {
 		if (currentTarget != null) {
-			
 			if (!CheckLineOfSight(currentTarget)) {
-				if (OnTargetLost != null) {
-					OnTargetLost(currentTarget);
-				}
-
-				currentTarget = null;
+				Deaggro();
 			}
 		}
 	}
@@ -65,6 +60,25 @@ public class AggroArea : MonoBehaviour {
 		if (OnFoundTarget != null) {
 			OnFoundTarget(other.gameObject);
 		}
+	}
+
+	/// <summary>
+	/// OnTriggerExit is called when the Collider other has stopped touching the trigger.
+	/// </summary>
+	/// <param name="other">The other Collider involved in this collision.</param>
+	void OnTriggerExit(Collider other) {
+		Deaggro();
+	}
+
+	/// <summary>
+	/// De-aggro the target and triggers the OnTargetLost event
+	/// </summary>
+	private void Deaggro() {
+		if (OnTargetLost != null) {
+			OnTargetLost(currentTarget);
+		}
+
+		currentTarget = null;
 	}
 
 	/// <summary>
