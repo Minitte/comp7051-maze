@@ -48,6 +48,9 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	private void Update () {
+        // apply gravity
+        _charControl.Move(Vector3.down);
+
         PlayerMovement();
         CameraRotation();
     }
