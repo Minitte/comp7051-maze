@@ -20,6 +20,11 @@ public class MazeGenerator : MonoBehaviour {
 	/// </summary>
 	public GameObject mazeParentPrefab;
 
+	/// <summary>
+	/// Prefab of an enemy to randomly spawn in
+	/// </summary>
+	public GameObject enemyPrefab;
+
 	[Header("Others")]
 
 	public GameObject currentMaze;
@@ -61,6 +66,9 @@ public class MazeGenerator : MonoBehaviour {
 
 		// build nav mesh
 		currentMaze.GetComponent<NavMeshSurface>().BuildNavMesh();
+
+		// spawn enemies in
+		SpawnEnemies();
 	}
 
 	/// <summary>
@@ -176,6 +184,23 @@ public class MazeGenerator : MonoBehaviour {
 					tile.BreakWall(dir);
 				}
 			}
+		}
+	}
+
+	private void SpawnEnemies() {
+		System.Random random = new System.Random();
+
+		for (int i = 0; i < (int)(mazeSize / 3); i++) {
+			int x = random.Next(0, mazeSize);
+			int z = random.Next(0, mazeSize);
+
+			GameObject enemy = Instantiate(enemyPrefab);
+
+			Vector3 pos = _tiles[x, z].transform.position;
+
+			pos.y += 2;
+
+			enemy.transform.position = pos; 
 		}
 	}
 

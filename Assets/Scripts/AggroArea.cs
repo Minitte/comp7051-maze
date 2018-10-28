@@ -35,13 +35,8 @@ public class AggroArea : MonoBehaviour {
 	/// </summary>
 	void Update() {
 		if (currentTarget != null) {
-			Vector3 direciton = currentTarget.transform.position - gameObject.transform.position;
-
-			direciton.Normalize();
-
-			Ray ray = new Ray(gameObject.transform.position, direciton);
-
-			if (Physics.Raycast(ray, 1000f, 1 << 15)) {
+			
+			if (!CheckLineOfSight(currentTarget)) {
 				if (OnTargetLost != null) {
 					OnTargetLost(currentTarget);
 				}
@@ -61,14 +56,7 @@ public class AggroArea : MonoBehaviour {
 			return;
 		}
 
-		Vector3 direciton = other.transform.position - gameObject.transform.position;
-
-		direciton.Normalize();
-
-		Ray ray = new Ray(gameObject.transform.position, direciton);
-
-		if (Physics.Raycast(ray, 1000f, 1 << 15)) {
-			Debug.Log("No vision");
+		if (!CheckLineOfSight(other.gameObject)) {
 			return;
 		}
 
@@ -77,6 +65,27 @@ public class AggroArea : MonoBehaviour {
 		if (OnFoundTarget != null) {
 			OnFoundTarget(other.gameObject);
 		}
+	}
+
+	/// <summary>
+	/// Checks line of sight
+	/// </summary>
+	/// <param name="go"></param>
+	/// <returns></returns>
+	private bool CheckLineOfSight(GameObject go) {
+		RaycastHit hit;
+
+		Vector3 direction = go.transform.position - this.transform.position;
+
+		direction.Normalize();
+
+		if (Physics.Raycast(transform.position, direction, out hit)) {
+			if (hit.transform == go.transform) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/// <summary>
