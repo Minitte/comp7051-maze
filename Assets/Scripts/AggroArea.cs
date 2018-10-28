@@ -16,6 +16,11 @@ public class AggroArea : MonoBehaviour {
 	public event AggroEvent OnFoundTarget;
 
 	/// <summary>
+	/// Event for when the target is out of sight
+	/// </summary>
+	public event AggroEvent OnTargetLost;
+
+	/// <summary>
 	/// Current aggro Target
 	/// </summary>
 	public GameObject currentTarget;
@@ -37,6 +42,10 @@ public class AggroArea : MonoBehaviour {
 			Ray ray = new Ray(gameObject.transform.position, direciton);
 
 			if (Physics.Raycast(ray, 1000f, 1 << 15)) {
+				if (OnTargetLost != null) {
+					OnTargetLost(currentTarget);
+				}
+
 				currentTarget = null;
 			}
 		}
@@ -59,6 +68,7 @@ public class AggroArea : MonoBehaviour {
 		Ray ray = new Ray(gameObject.transform.position, direciton);
 
 		if (Physics.Raycast(ray, 1000f, 1 << 15)) {
+			Debug.Log("No vision");
 			return;
 		}
 
