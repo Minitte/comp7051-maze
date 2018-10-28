@@ -190,17 +190,20 @@ public class MazeGenerator : MonoBehaviour {
 	private void SpawnEnemies() {
 		System.Random random = new System.Random();
 
-		for (int i = 0; i < (int)(mazeSize / 3); i++) {
+		for (int i = 0; i < (int)mazeSize; i++) {
 			int x = random.Next(0, mazeSize);
 			int z = random.Next(0, mazeSize);
 
-			GameObject enemy = Instantiate(enemyPrefab);
+			if (new Vector2(x, z).magnitude < 4f) {
+				i--;
+				continue;
+			}
 
 			Vector3 pos = _tiles[x, z].transform.position;
 
 			pos.y += 2;
 
-			enemy.transform.position = pos; 
+			GameObject enemy = Instantiate(enemyPrefab, pos, Quaternion.identity); 
 		}
 	}
 

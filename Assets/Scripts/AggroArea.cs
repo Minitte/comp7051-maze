@@ -31,17 +31,6 @@ public class AggroArea : MonoBehaviour {
 	public string[] tags;
 
 	/// <summary>
-	/// Update is called every frame, if the MonoBehaviour is enabled.
-	/// </summary>
-	void Update() {
-		if (currentTarget != null) {
-			if (!CheckLineOfSight(currentTarget)) {
-				Deaggro();
-			}
-		}
-	}
-
-	/// <summary>
 	/// OnTriggerStay is called once per frame for every Collider other
 	/// that is touching the trigger.
 	/// </summary>
