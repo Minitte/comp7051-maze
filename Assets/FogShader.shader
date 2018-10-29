@@ -6,9 +6,6 @@
 Shader "Custom/FogShader" {
 	Properties
 	{
-		_RedAlpha("Red Alpha", Float) = 0.5
-		_GreenAlpha("Blue Alpha", Float) = 0.5
-		_BlueAlpha("Green Alpha", Float) = 0.5
 		_MainTex("White Texture", 2D) = "white" {}
 	}
 	SubShader
@@ -52,9 +49,9 @@ Shader "Custom/FogShader" {
 
 			// Calculate final colours, further objects will appear more white
 			float4 depthColour;
-			depthColour.r = texColour.r + depthValue;
-			depthColour.g = texColour.b + depthValue;
-			depthColour.b = texColour.g + depthValue;
+			depthColour.r = (texColour.r * 0.5) + depthValue;
+			depthColour.g = (texColour.g * 0.5) + depthValue;
+			depthColour.b = (texColour.b  * 0.5) + depthValue;
 			depthColour.a = 1;
 
 			return depthColour;
