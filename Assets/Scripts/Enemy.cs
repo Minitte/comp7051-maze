@@ -19,6 +19,11 @@ public class Enemy : MonoBehaviour {
 	/// </summary>
 	public AggroArea aggroArea;
 
+	/// <summary>
+	/// Animator Component
+	/// </summary>
+	public Animator animator;
+
 	[Header("AI Properties")]
 
 	/// <summary>
@@ -77,6 +82,14 @@ public class Enemy : MonoBehaviour {
 		aggroArea.OnTargetLost += StopChasing;
 
 		NextPatrolDestination();
+	}
+
+	/// <summary>
+	/// Update is called every frame, if the MonoBehaviour is enabled.
+	/// </summary>
+	void Update() {
+		animator.SetFloat("Speed", _agent.velocity.magnitude);
+		animator.gameObject.transform.localPosition = Vector3.zero;
 	}
 
 	/// <summary>
