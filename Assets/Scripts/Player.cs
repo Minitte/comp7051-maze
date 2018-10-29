@@ -51,8 +51,23 @@ public class Player : MonoBehaviour {
         // apply gravity
         _charControl.Move(Vector3.down);
 
+        // check for home input to reset position
+        ResetInput();
+
         PlayerMovement();
         CameraRotation();
+    }
+
+    /// <summary>
+    /// Resets the player to origin
+    /// </summary>
+    private void ResetInput() {
+        float home = Input.GetAxis("Home");
+
+        if (home > 0.1f) {
+            this.transform.position = new Vector3(0f, 1.25f, 0f);
+            this.transform.rotation = Quaternion.identity;
+        }
     }
 
     /// <summary>
