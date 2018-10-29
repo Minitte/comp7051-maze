@@ -194,6 +194,7 @@ public class MazeGenerator : MonoBehaviour {
 			int x = random.Next(0, mazeSize);
 			int z = random.Next(0, mazeSize);
 
+			// min distances from entrance
 			if (new Vector2(x, z).magnitude < 4f) {
 				i--;
 				continue;
@@ -203,7 +204,19 @@ public class MazeGenerator : MonoBehaviour {
 
 			pos.y += 2;
 
-			GameObject enemy = Instantiate(enemyPrefab, pos, Quaternion.identity); 
+			GameObject enemyGO = Instantiate(enemyPrefab, pos, Quaternion.identity); 
+
+			Enemy enemyScript = enemyGO.GetComponent<Enemy>();
+
+			// setting up patrol destinations
+			enemyScript.patrolList = new Vector3[2];
+
+			int patrolX = random.Next(0, mazeSize);
+			int patrolZ = random.Next(0, mazeSize);
+
+			enemyScript.patrolList[0] = _tiles[patrolX, patrolZ].transform.position;
+
+			enemyScript.patrolList[1] = _tiles[x, z].transform.position;
 		}
 	}
 
