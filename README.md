@@ -14,7 +14,7 @@ Camera:
 - Mouse
 
 Fog toggle:
-- Triangle button on controller
+- Square button on controller
 - F on keyboard
 
 Reset position:
@@ -22,5 +22,5 @@ Reset position:
 - Home on keyboard
 
 No wall collision:
-- Square button on controller
+- Triangle button on controller
 - Page Up on keyboard
