@@ -14,7 +14,7 @@ Camera:
 - Mouse
 
 Fog toggle:
-- Square button on controller
+- Cross button on controller
 - F on keyboard
 
 Reset position:
