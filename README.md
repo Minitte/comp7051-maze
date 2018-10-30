@@ -18,9 +18,13 @@ Fog toggle:
 - F on keyboard
 
 Reset position:
-- Home button on controller
+- Press down on the touch pad on controller
 - Home on keyboard
 
 No wall collision:
 - Triangle button on controller
 - Page Up on keyboard
+
+Day/Night toggle:
+- Circle button on controller
+- G on keyboard
