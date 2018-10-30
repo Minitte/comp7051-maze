@@ -36,7 +36,7 @@
             v2f vert (appdata_base v)
             {
                 v2f o;
-                o.pos = UnityObjectToClipPos(v.vertex);
+                o.pos = UnityObjectToClipPos(v.vertex); 
                 o.uv = v.texcoord;
                 half3 worldNormal = UnityObjectToWorldNormal(v.normal);
                 half nl = max(0, dot(worldNormal, _WorldSpaceLightPos0.xyz));
@@ -53,7 +53,7 @@
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
                 fixed shadow = SHADOW_ATTENUATION(i);
-                fixed3 lighting = i.diff * shadow * (_AmbientLightColor * _AmbientLighIntensity);
+                fixed3 lighting = i.diff * shadow + (unity_AmbientSky * _AmbientLighIntensity) * (_AmbientLightColor * _AmbientLighIntensity);
                 col.rgb *= lighting;
                 return col;
             }
