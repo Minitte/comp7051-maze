@@ -6,21 +6,25 @@ This assignment's goal is to create a maze game and to demonstrate the usage of 
 ## Controls
 
 Movement:
-- Direction Pad on controller
+- left joystick on controller
 - WASD on keyboard
 
 Camera:
-- Joystick on controller
+- right joystick on controller
 - Mouse
 
 Fog toggle:
-- Triangle button on controller
+- Square button on controller
 - F on keyboard
 
 Reset position:
-- Home button on controller
+- Press down on the touch pad on controller
 - Home on keyboard
 
 No wall collision:
-- Square button on controller
+- Triangle button on controller
 - Page Up on keyboard
+
+Day/Night toggle:
+- Circle button on controller
+- G on keyboard
