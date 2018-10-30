@@ -28,3 +28,6 @@ No wall collision:
 Day/Night toggle:
 - Circle button on controller
 - G on keyboard
+
+## Credits
+Textures.com for wall and floor texutures
