@@ -58,8 +58,8 @@ public class MazeGenerator : MonoBehaviour {
 		GeneratePath();
 
 		// Starting and exit points
-		_tiles[0, 0].BreakWall(2);
-		_tiles[mazeSize - 1, mazeSize - 1].BreakWall(0);
+		_tiles[0, 0].walls[2].GetComponent<Renderer>().enabled = false;
+		_tiles[mazeSize - 1, mazeSize - 1].walls[0].GetComponent<Renderer>().enabled = false;
 
 		// wait 1 frame for colliders to update
 		yield return new WaitForEndOfFrame();
