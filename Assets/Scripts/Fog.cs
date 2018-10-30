@@ -21,6 +21,11 @@ public class Fog : MonoBehaviour {
     /// </summary>
     private bool _enabled;
 
+    /// <summary>
+    /// key cooldown
+    /// </summary>
+    private bool _cooldown;
+
     private void Start() {
         _camera = GetComponent<Camera>();
         if (_camera == null) {
@@ -32,9 +37,19 @@ public class Fog : MonoBehaviour {
     }
 
     private void Update() {
-        // Toggling the fog effect
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown("joystick button 3")) {
+        float fogInput = Input.GetAxis("FogInput");
+
+        if (_cooldown) {
+            if (fogInput > 0.1f) {
+                return;
+            } else {
+                _cooldown = false;
+            }
+        }
+
+        if (fogInput > 0.1f) {
             ToggleFog();
+            _cooldown = true;
         }
     }
 
