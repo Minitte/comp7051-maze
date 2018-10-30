@@ -6,11 +6,11 @@ This assignment's goal is to create a maze game and to demonstrate the usage of 
 ## Controls
 
 Movement:
-- Direction Pad on controller
+- left joystick on controller
 - WASD on keyboard
 
 Camera:
-- Joystick on controller
+- right joystick on controller
 - Mouse
 
 Fog toggle:
