@@ -14,7 +14,7 @@ Camera:
 - Mouse
 
 Fog toggle:
-- Square button on controller
+- Cross button on controller
 - F on keyboard
 
 Reset position:
@@ -28,3 +28,6 @@ No wall collision:
 Day/Night toggle:
 - Circle button on controller
 - G on keyboard
+
+## Credits
+Textures.com for wall and floor texutures
