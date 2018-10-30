@@ -76,8 +76,8 @@ public class Player : MonoBehaviour {
     private void PlayerMovement() {
         if (_controllerPluggedIn) {
             // d-pad axis variables
-            float horzAxis = Input.GetAxisRaw("DPadHorizontal");
-            float vertAxis = -Input.GetAxisRaw("DPadVertical");
+            float horzAxis = Input.GetAxis("DPadHorizontal");
+            float vertAxis = -Input.GetAxis("DPadVertical");
 
             // Move accordingly to d-pad axis
             _charControl.Move(transform.right * horzAxis * Time.deltaTime * speed);
