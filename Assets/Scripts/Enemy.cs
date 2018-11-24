@@ -71,6 +71,11 @@ public class Enemy : MonoBehaviour {
 	/// </summary>
 	private int _patrolIndex;
 
+    /// <summary>
+    /// Flag to represent if this enemy is dead.
+    /// </summary>
+    private bool _dead;
+
 	/// <summary>
 	/// Start is called on the frame when a script is enabled just before
 	/// any of the Update methods is called the first time.
@@ -97,6 +102,9 @@ public class Enemy : MonoBehaviour {
 	/// It is called after all Update functions have been called.
 	/// </summary>
 	void LateUpdate() {
+        if (_dead) {
+            return;
+        }
 		switch (state) {
 
 			// chasing a player
@@ -177,4 +185,20 @@ public class Enemy : MonoBehaviour {
 
 		_agent.SetDestination(patrolList[_patrolIndex]);
 	}
+
+    /// <summary>
+    /// Kills this enemy.
+    /// </summary>
+    public void Die() {
+        // Unsubscribe from events
+        aggroArea.OnFoundTarget -= Chase;
+        aggroArea.OnTargetLost -= StopChasing;
+
+        animator.SetTrigger("Die"); // Play death animation
+        GetComponent<Collider>().enabled = false; // Disable collider
+
+        // Reset path
+        _agent.ResetPath();
+        _dead = true;
+    }
 }
