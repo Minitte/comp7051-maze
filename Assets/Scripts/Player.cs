@@ -17,6 +17,21 @@ public class Player : MonoBehaviour {
     public Transform fpsCamera;
 
     /// <summary>
+    /// Reference to the animator.
+    /// </summary>
+    public Animator animator;
+
+    /// <summary>
+    /// Sound effect for when the player is walking.
+    /// </summary>
+    public AudioClip walkSoundFX;
+
+    /// <summary>
+    /// The player's audio source.
+    /// </summary>
+    public AudioSource audioSource;
+
+    /// <summary>
     /// How sensitive the camera rotation is.
     /// </summary>
     public float lookSensitivity = 2f;
@@ -31,11 +46,18 @@ public class Player : MonoBehaviour {
     /// </summary>
     private bool _controllerPluggedIn;
 
+    /// <summary>
+    /// Used for determining speed of the player.
+    /// </summary>
+    private Vector3 _oldPos, _curPos;
+
 	// Use this for initialization
 	private void Start () {
         if (Input.GetJoystickNames().Length > 0 || Application.platform == RuntimePlatform.PS4) {
             _controllerPluggedIn = true;
         }
+        _oldPos = transform.position;
+        _curPos = transform.position;
     }
 	
 	// Update is called once per frame
@@ -48,6 +70,17 @@ public class Player : MonoBehaviour {
 
         PlayerMovement();
         CameraRotation();
+
+        // Set speed in animator
+        _curPos = transform.position;
+        float speed = (_curPos - _oldPos).magnitude / Time.deltaTime;
+        //animator.SetFloat("Speed", speed);
+        if (speed > 1f) {
+            animator.SetBool("Walking", true);
+        } else {
+            animator.SetBool("Walking", false);
+        }
+        _oldPos = transform.position;
     }
 
     /// <summary>
@@ -134,5 +167,12 @@ public class Player : MonoBehaviour {
 
         // Apply rotation to the camera
         fpsCamera.rotation = Quaternion.Euler(newRotation);
+    }
+
+    /// <summary>
+    /// Plays the walking sound.
+    /// </summary>
+    public void PlayWalkSound() {
+        SoundManager.instance.PlaySound(audioSource, walkSoundFX);
     }
 }
