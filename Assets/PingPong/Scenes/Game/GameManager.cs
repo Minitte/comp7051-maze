@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
@@ -86,10 +87,11 @@ public class GameManager : MonoBehaviour {
 	{
 		if (_win)
 		{
-			if (Input.GetAxis("P1Submit") != 0)
+			if (Input.GetAxis("Submit") != 0)
 			{
-				RestartGame();
-				_win = false;
+				// RestartGame();
+				// _win = false;
+				LoadToMaze();
 			}
 		}
 	}
@@ -101,7 +103,7 @@ public class GameManager : MonoBehaviour {
 		if (Scores[scoringTeam] > 6)
 		{
 			_win = true;
-			WinText.text = "Player " + (scoringTeam + 1) + " wins!\nEnter to restart";
+			WinText.text = "Player " + (scoringTeam + 1) + " wins!\nEnter or Cross to return";
 			WinText.gameObject.SetActive(true);
 		}
 		else
@@ -122,6 +124,17 @@ public class GameManager : MonoBehaviour {
 		EventMngr.BroadcastBallSpawnEvent(ballGO.GetComponent<PingPongBall>());
 	}
 
+	/// <summary>
+	/// Loads back to the maze
+	/// </summary>
+	public void LoadToMaze() 
+	{
+		SceneManager.LoadScene("Maze");
+	}
+
+	/// <summary>
+	/// Restarts the game
+	/// </summary>
 	public void RestartGame()
 	{
 		Scores[0] = 0;

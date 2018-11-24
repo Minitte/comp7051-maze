@@ -30,7 +30,7 @@ public class PlayerInfo : MonoBehaviour {
 	/// </summary>
 	void Start()
 	{
-		DontDestroyOnLoad(this.gameObject);
+		//DontDestroyOnLoad(this.gameObject);
 		gameObject.name = "Player " + Slot;
 		Players.Add(this);
 	}
