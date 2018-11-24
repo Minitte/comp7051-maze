@@ -7,6 +7,16 @@
 public class Player : MonoBehaviour {
 
     /// <summary>
+    /// Reference to the character controller.
+    /// </summary>
+    public CharacterController charControl;
+
+    /// <summary>
+    /// Reference to the camera transform.
+    /// </summary>
+    public Transform fpsCamera;
+
+    /// <summary>
     /// How sensitive the camera rotation is.
     /// </summary>
     public float lookSensitivity = 2f;
@@ -17,31 +27,13 @@ public class Player : MonoBehaviour {
     public float speed = 2f;
 
     /// <summary>
-    /// Reference to the character controller.
-    /// </summary>
-    private CharacterController _charControl;
-
-    /// <summary>
-    /// Reference to the camera transform.
-    /// </summary>
-    private Transform _camera;
-
-    /// <summary>
     /// Flag for if a controller is plugged in.
     /// </summary>
     private bool _controllerPluggedIn;
 
 	// Use this for initialization
 	private void Start () {
-        _charControl = GetComponent<CharacterController>();
-        _camera = GetComponentInChildren(typeof(Camera)).transform;
-
-        // Check if there is a camera component attached to a child
-        if (_camera == null) {
-            Debug.LogWarning("Couldn't find a child with camera component attached to the player.");
-        }
-
-        if (Input.GetJoystickNames().Length > 0) {
+        if (Input.GetJoystickNames().Length > 0 || Application.platform == RuntimePlatform.PS4) {
             _controllerPluggedIn = true;
         }
     }
@@ -49,7 +41,7 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	private void Update () {
         // apply gravity
-        _charControl.Move(Vector3.down);
+        charControl.Move(Vector3.down);
 
         // check for home input to reset position
         ResetInput();
@@ -80,21 +72,21 @@ public class Player : MonoBehaviour {
             float vertAxis = -Input.GetAxis("DPadVertical");
 
             // Move accordingly to d-pad axis
-            _charControl.Move(transform.right * horzAxis * Time.deltaTime * speed);
-            _charControl.Move(transform.forward * vertAxis * Time.deltaTime * speed);
+            charControl.Move(transform.right * horzAxis * Time.deltaTime * speed);
+            charControl.Move(transform.forward * vertAxis * Time.deltaTime * speed);
 
         } else {
             if (Input.GetKey(KeyCode.W)) { // Forward
-                _charControl.Move(transform.forward * Time.deltaTime * speed);
+                charControl.Move(transform.forward * Time.deltaTime * speed);
             }
             if (Input.GetKey(KeyCode.S)) { // Backward
-                _charControl.Move(-transform.forward * Time.deltaTime * speed);
+                charControl.Move(-transform.forward * Time.deltaTime * speed);
             }
             if (Input.GetKey(KeyCode.A)) { // Left
-                _charControl.Move(-transform.right * Time.deltaTime * speed);
+                charControl.Move(-transform.right * Time.deltaTime * speed);
             }
             if (Input.GetKey(KeyCode.D)) { // Right
-                _charControl.Move(transform.right * Time.deltaTime * speed);
+                charControl.Move(transform.right * Time.deltaTime * speed);
             }
         }
     }
@@ -127,7 +119,7 @@ public class Player : MonoBehaviour {
     /// <param name="tiltDegrees">The amount to tilt the camera by in degrees</param>
     private void TiltCamera(float tiltDegrees) {
         // Camera rotation after tilting it
-        Vector3 newRotation = _camera.eulerAngles + (new Vector3(-tiltDegrees, 0f, 0f) * lookSensitivity);
+        Vector3 newRotation = fpsCamera.eulerAngles + (new Vector3(-tiltDegrees, 0f, 0f) * lookSensitivity);
 
         // The x value of the rotation normalized around 180 degrees 
         float newRotationX = newRotation.x > 180f ? newRotation.x - 360f : newRotation.x;
@@ -141,6 +133,6 @@ public class Player : MonoBehaviour {
         }
 
         // Apply rotation to the camera
-        _camera.rotation = Quaternion.Euler(newRotation);
+        fpsCamera.rotation = Quaternion.Euler(newRotation);
     }
 }
