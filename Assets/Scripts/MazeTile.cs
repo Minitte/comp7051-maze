@@ -28,10 +28,14 @@ public class MazeTile : MonoBehaviour {
 	/// </summary>
 	private bool _cooldown;
 
-	/// <summary>
-	/// Update is called every frame, if the MonoBehaviour is enabled.
-	/// </summary>
-	void Update() {
+    private void Start() {
+        _dayToggle = true; // Game starts on daytime
+    }
+
+    /// <summary>
+    /// Update is called every frame, if the MonoBehaviour is enabled.
+    /// </summary>
+    void Update() {
 		float dni = Input.GetAxis("DayNightInput");
 		
 		if (_cooldown) {
@@ -47,6 +51,7 @@ public class MazeTile : MonoBehaviour {
 			_cooldown = true;
 
 			float light = _dayToggle ? 1f : 0.1f;
+            SoundManager.instance.Day = _dayToggle;
 
 			for (int i = 0; i < walls.Length; i++) {
 				if (walls[i] != null) {
