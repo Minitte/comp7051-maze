@@ -27,6 +27,11 @@ public class Player : MonoBehaviour {
     public AudioClip walkSoundFX;
 
     /// <summary>
+    /// Sound effect for when the player hits a wall;
+    /// </summary>
+    public AudioClip hitWallSoundFX;
+
+    /// <summary>
     /// The player's audio source.
     /// </summary>
     public AudioSource audioSource;
@@ -51,6 +56,11 @@ public class Player : MonoBehaviour {
     /// </summary>
     private Vector3 _oldPos, _curPos;
 
+    /// <summary>
+    /// The current speed of the player;
+    /// </summary>
+    private float _currentSpeed;
+
 	// Use this for initialization
 	private void Start () {
         if (Input.GetJoystickNames().Length > 0 || Application.platform == RuntimePlatform.PS4) {
@@ -71,11 +81,12 @@ public class Player : MonoBehaviour {
         PlayerMovement();
         CameraRotation();
 
-        // Set speed in animator
+        // Calculate current speed
         _curPos = transform.position;
-        float speed = (_curPos - _oldPos).magnitude / Time.deltaTime;
-        //animator.SetFloat("Speed", speed);
-        if (speed > 1f) {
+        _currentSpeed = (_curPos - _oldPos).magnitude / Time.deltaTime;
+
+        // Set animation status
+        if (_currentSpeed > 1f) {
             animator.SetBool("Walking", true);
         } else {
             animator.SetBool("Walking", false);
@@ -174,5 +185,15 @@ public class Player : MonoBehaviour {
     /// </summary>
     public void PlayWalkSound() {
         SoundManager.instance.PlaySound(audioSource, walkSoundFX);
+    }
+
+    /// <summary>
+    /// Called when character controller hits another collider.
+    /// </summary>
+    private void OnControllerColliderHit(ControllerColliderHit collision) {
+        // Check if collided with a wall, and if the wall collision sound isn't already playing
+        if (collision.collider.CompareTag("Wall") && !SoundManager.instance.activeClips.Contains(hitWallSoundFX)) {
+            SoundManager.instance.PlaySound(audioSource, hitWallSoundFX);
+        }
     }
 }
