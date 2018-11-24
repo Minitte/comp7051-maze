@@ -65,6 +65,7 @@ public class Fog : MonoBehaviour {
         }
         
         _enabled = !_enabled; // Toggle enabled flag
+        SoundManager.instance.Fog = _enabled;
     }
 
     /// <summary>

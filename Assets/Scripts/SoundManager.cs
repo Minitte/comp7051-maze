@@ -25,6 +25,11 @@ public class SoundManager : MonoBehaviour {
     public AudioClip nightMusic;
 
     /// <summary>
+    /// The distance between the player and the nearest enemy.
+    /// </summary>
+    public float nearestDistance;
+
+    /// <summary>
     /// List of currently playing audio clips.
     /// </summary>
     public List<AudioClip> activeClips;
@@ -41,6 +46,11 @@ public class SoundManager : MonoBehaviour {
     private bool _day;
 
     /// <summary>
+    /// True if fog is toggled, false otherwise.
+    /// </summary>
+    private bool _fog;
+
+    /// <summary>
     /// Property variable for day.
     /// </summary>
     public bool Day {
@@ -53,6 +63,13 @@ public class SoundManager : MonoBehaviour {
                 PlayMusic(_day ? dayMusic : nightMusic);
             }
         }
+    }
+
+    /// <summary>
+    /// Property variable for fog.
+    /// </summary>
+    public bool Fog {
+        set { _fog = value; }
     }
 
     private void Awake() {
@@ -72,6 +89,8 @@ public class SoundManager : MonoBehaviour {
         if (Input.GetButtonDown("ToggleMusic")) {
             ToggleMusic();
         }
+
+        AdjustMusicVolume();
     }
 
     /// <summary>
@@ -108,6 +127,20 @@ public class SoundManager : MonoBehaviour {
                 PlayMusic(_day ? dayMusic : nightMusic);
             }
         }
+    }
+
+    public void AdjustMusicVolume() {
+        float volume = 1f;
+
+        // Adjust volume based on distance to the closest enemy
+        volume *= 1f / nearestDistance;
+
+        // Fog halves the volume
+        if (_fog) {
+            volume *= 0.5f;
+        }
+
+        audioSource.volume = volume; // Set volume
     }
 
     /// <summary>

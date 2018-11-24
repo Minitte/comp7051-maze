@@ -61,6 +61,11 @@ public class Player : MonoBehaviour {
     /// </summary>
     private float _currentSpeed;
 
+    /// <summary>
+    /// Collider array that holds nearby colliders.
+    /// </summary>
+    private Collider[] nearbyColliders;
+
 	// Use this for initialization
 	private void Start () {
         if (Input.GetJoystickNames().Length > 0 || Application.platform == RuntimePlatform.PS4) {
@@ -68,6 +73,7 @@ public class Player : MonoBehaviour {
         }
         _oldPos = transform.position;
         _curPos = transform.position;
+        nearbyColliders = new Collider[10];
     }
 	
 	// Update is called once per frame
@@ -92,6 +98,9 @@ public class Player : MonoBehaviour {
             animator.SetBool("Walking", false);
         }
         _oldPos = transform.position;
+
+        // Check for the closest enemy object
+        CheckNearbyColliders();
     }
 
     /// <summary>
@@ -188,6 +197,27 @@ public class Player : MonoBehaviour {
     }
 
     /// <summary>
+    /// Checks for nearby colliders.
+    /// Results are put into nearbyColliders array.
+    /// </summary>
+    private void CheckNearbyColliders() {
+        Physics.OverlapSphereNonAlloc(transform.position, 15f, nearbyColliders, 1 << 10); // Get nearby colliders
+
+        // Find the closest enemy distance
+        float nearestDistance = float.MaxValue;
+        foreach (Collider c in nearbyColliders) {
+            if (c != null) {
+                float distance = Vector3.Distance(c.transform.position, transform.position);
+                if (distance < nearestDistance) {
+                    nearestDistance = distance;
+                }
+            }
+        }
+
+        SoundManager.instance.nearestDistance = nearestDistance;
+    }
+
+    /// <summary>
     /// Called when character controller hits another collider.
     /// </summary>
     private void OnControllerColliderHit(ControllerColliderHit collision) {
@@ -195,5 +225,13 @@ public class Player : MonoBehaviour {
         if (collision.collider.CompareTag("Wall") && !SoundManager.instance.activeClips.Contains(hitWallSoundFX)) {
             SoundManager.instance.PlaySound(audioSource, hitWallSoundFX);
         }
+    }
+
+    /// <summary>
+    /// Draws a red sphere.
+    /// </summary>
+    private void OnDrawGizmosSelected() {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, 15f);
     }
 }
