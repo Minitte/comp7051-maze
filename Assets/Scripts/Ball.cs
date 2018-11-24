@@ -26,7 +26,7 @@ public class Ball : MonoBehaviour {
     }
 
     private void FixedUpdate() {
-        _checking = false;
+        _checking = false; // Reset check flag
     }
 
     /// <summary>
@@ -47,6 +47,7 @@ public class Ball : MonoBehaviour {
         if (other.gameObject.CompareTag("Enemy") && _checking) {
             // Increment score and destroy the ball immediately
             ScoreManager.instance.IncrementScore();
+            other.GetComponent<Enemy>().Die();
             Destroy(gameObject);
         }
     }
