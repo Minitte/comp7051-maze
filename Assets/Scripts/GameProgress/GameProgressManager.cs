@@ -6,17 +6,27 @@ using UnityEngine.AI;
 public class GameProgressManager : MonoBehaviour 
 {
     /// <summary>
+    /// Instance of the game progress manager
+    /// </summary>
+    public static GameProgressManager instance;
+
+    /// <summary>
     /// Last updated save data
     /// </summary>
     public GameProgress currentSave;
 
     /// <summary>
-    /// Start is called on the frame when a script is enabled just before
-    /// any of the Update methods is called the first time.
+    /// Awake is called when the script instance is being loaded.
     /// </summary>
-    void Start()
+    void Awake()
     {
-        DontDestroyOnLoad(this.gameObject);
+        if (instance == null) {
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        } else {
+            Debug.Log("Found another GameProgressManager... Destorying");
+            Destroy(this.gameObject);
+        }
     }
 
     /// <summary>

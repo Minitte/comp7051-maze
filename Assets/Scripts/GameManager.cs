@@ -29,6 +29,8 @@ namespace dpaw.bcit.c7051.maze
 		/// </summary>
 		void Start()
 		{
+			gameProgressManager = GameProgressManager.instance;
+
 			if (!gameProgressManager.currentSave.oldMaze) {
 				mazeGenerator.BeginMazeGeneration("seed" + new System.Random().Next(0, 9999999));
 			} else {
