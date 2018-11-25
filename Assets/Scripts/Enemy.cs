@@ -52,6 +52,12 @@ public class Enemy : MonoBehaviour {
 	public Vector3[] patrolList;
 
 	/// <summary>
+	/// if the enemy is dead
+	/// </summary>
+	/// <value></value>
+	public bool dead { get { return _dead; } }
+
+	/// <summary>
 	/// nav agent 
 	/// </summary>
 	private NavMeshAgent _agent;	
