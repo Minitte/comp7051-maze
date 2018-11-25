@@ -1,21 +1,37 @@
 
 using System;
+using UnityEngine;
 
 [Serializable]
 public class EntitySave 
 {
-    /// <summary>
-    /// Rotation of enemy
-    /// </summary>
-    float rotX, rotY, rotZ;
 
     /// <summary>
-    /// Position of enemy
+    /// Entity's position
     /// </summary>
-    float posX, posY, posZ;
+    /// <value></value>
+    public Vector3 position 
+    {
+        get 
+        {
+            return new Vector3(rotX, rotY, rotZ);
+        }
+
+        set
+        {
+            rotX = value.x;
+            rotY = value.y;
+            rotZ = value.z;
+        }
+    }
 
     /// <summary>
     /// Dead flag
     /// </summary>
-    bool dead;
+    public bool dead;
+
+    /// <summary>
+    /// Position of entity
+    /// </summary>
+    private float rotX, rotY, rotZ;
 }
