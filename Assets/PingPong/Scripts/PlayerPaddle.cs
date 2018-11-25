@@ -55,20 +55,27 @@ public class PlayerPaddle : MonoBehaviour {
 		float tDist = Speed / Vector3.Distance(MaxPoint, MinPoint);
 		tDist *= Time.deltaTime;
 			
-		float joy = Input.GetAxis("P" + (OwningSlot + 1) + "VertJoy");
-		float key = Input.GetAxis("P" + (OwningSlot + 1) + "VertKey");
-
-		float input = key != 0 ? key : joy;
-
-		if (input != 0)
+		if (OwningSlot == 0) 
 		{
-			TValue += tDist * input;
 
-			// max _t at 1
-			TValue = TValue > 1f ? 1f : TValue;
+			float joy = Input.GetAxis("Vertical");
 
-			// min _t at 0
-			TValue = TValue < 0f ? 0f : TValue;
+			// float joy = Input.GetAxis("P" + (OwningSlot + 1) + "VertJoy");
+			// float key = Input.GetAxis("P" + (OwningSlot + 1) + "VertKey");
+
+			// float input = key != 0 ? key : joy;
+			float input = joy;
+
+			if (input != 0)
+			{
+				TValue += tDist * input;
+
+				// max _t at 1
+				TValue = TValue > 1f ? 1f : TValue;
+
+				// min _t at 0
+				TValue = TValue < 0f ? 0f : TValue;
+			}
 		}
 
 		transform.position = Vector3.Lerp(MinPoint, MaxPoint, TValue);
