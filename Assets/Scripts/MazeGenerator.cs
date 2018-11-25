@@ -141,7 +141,6 @@ public class MazeGenerator : MonoBehaviour {
 		// Variables for DFS
 		Stack<MazeTile> tileStack = new Stack<MazeTile>();
 		bool[,] visited = new bool[mazeSize, mazeSize];
-		// System.Random random = new System.Random();
 
 		// Initialize DFS
 		tileStack.Push(currentMaze.tilesArray[random.Next(0, mazeSize), random.Next(0, mazeSize)]);
@@ -267,9 +266,10 @@ public class MazeGenerator : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Spawn enemies
+	/// </summary>
 	private void SpawnEnemies() {
-		System.Random random = new System.Random();
-
 		for (int i = 0; i < (int)mazeSize; i++) {
 			int x = random.Next(0, mazeSize);
 			int z = random.Next(0, mazeSize);
@@ -287,6 +287,8 @@ public class MazeGenerator : MonoBehaviour {
 			GameObject enemyGO = Instantiate(enemyPrefab, pos, Quaternion.identity); 
 
 			Enemy enemyScript = enemyGO.GetComponent<Enemy>();
+
+			currentMaze.enemies.Add(enemyScript);
 
 			// setting up patrol destinations
 			enemyScript.patrolList = new Vector3[2];

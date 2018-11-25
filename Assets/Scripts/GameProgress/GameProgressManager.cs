@@ -69,6 +69,8 @@ public class GameProgressManager : MonoBehaviour
 
             enemySave.position = enemy.transform.position;
             enemySave.dead = enemy.dead; 
+
+            currentSave.enemies.Add(enemySave);
         }
 
         // Save player
