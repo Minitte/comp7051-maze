@@ -6,9 +6,14 @@ using System.Collections.Generic;
 public class GameProgress
 {
     /// <summary>
+    /// if the maze is old    
+    /// </summary>
+    public bool oldMaze;
+
+    /// <summary>
     /// Seed used for generating the maze
     /// </summary>
-    public int mazeSeed;
+    public string mazeSeed;
 
     /// <summary>
     /// Player's Score
@@ -23,7 +28,7 @@ public class GameProgress
     /// <summary>
     /// List of enemies
     /// </summary>
-    public List<EntitySave> enemies;
+    public List<EnemySave> enemies;
 
 
 }
