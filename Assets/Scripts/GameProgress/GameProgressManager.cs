@@ -73,7 +73,13 @@ public class GameProgressManager : MonoBehaviour
 
         // Save player
         currentSave.player = new EntitySave();
-        currentSave.player.position = localPlayer.transform.position;
+        
+        Vector3 pos = localPlayer.transform.position;
+        pos.x = ((int)pos.x / 2) * 2f;
+        pos.y = ((int)pos.y / 2) * 2f;
+        pos.z = ((int)pos.z / 2) * 2f;
+
+        currentSave.player.position = pos;
 
         // save score
         currentSave.score = score.currentScore;

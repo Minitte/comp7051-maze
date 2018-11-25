@@ -7,7 +7,6 @@ namespace dpaw.bcit.c7051.maze
 
 	public class GameManager : MonoBehaviour 
 	{
-
 		/// <summary>
 		/// game progress manager to restore with
 		/// </summary>
@@ -49,6 +48,16 @@ namespace dpaw.bcit.c7051.maze
 			GameObject player = GameObject.Find("Player");
 
 			gameProgressManager.RestoreFromSave(maze, player, scoreManager);
+		}
+
+		/// <summary>
+		/// Saves the maze's game state
+		/// </summary>
+		public void SaveState() 
+		{
+			GameObject player = GameObject.Find("Player");
+
+			gameProgressManager.SaveGameState(mazeGenerator.currentMaze, player, scoreManager);
 		}
 	}
 }
