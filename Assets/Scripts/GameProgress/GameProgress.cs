@@ -15,6 +15,9 @@ public class GameProgress
     /// </summary>
     public int score;
 
+    /// <summary>
+    /// Player position and info
+    /// </summary>
     public EntitySave player;
 
     /// <summary>
