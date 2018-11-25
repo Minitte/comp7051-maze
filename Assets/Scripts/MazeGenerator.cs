@@ -8,6 +8,8 @@ using UnityEngine.AI;
 /// </summary>
 public class MazeGenerator : MonoBehaviour {
 
+	private static System.Random random = new System.Random();
+
 	[Header("Prefabs")]
 
 	/// <summary>
@@ -25,24 +27,30 @@ public class MazeGenerator : MonoBehaviour {
 	/// </summary>
 	public GameObject enemyPrefab;
 
+	/// <summary>
+	/// prefab of the door
+	/// </summary>
+	public GameObject doorPrefab;
+
 	[Header("Others")]
 
-	public GameObject currentMaze;
+	/// <summary>
+	/// Current maze reference
+	/// </summary>
+	public MazeData currentMaze;
 
 	/// <summary>
 	/// Size of the maze
 	/// </summary>
 	public int mazeSize;
 
-	private MazeTile[,] _tiles;
+	//private MazeTile[,] currentMaze.tilesArray;
 
 	/// <summary>
 	/// Start is called on the frame when a script is enabled just before
 	/// any of the Update methods is called the first time.
 	/// </summary>
 	void Start() {
-		_tiles = new MazeTile[mazeSize, mazeSize];
-
 		StartCoroutine(CreateMaze());
 	}
 
@@ -51,21 +59,26 @@ public class MazeGenerator : MonoBehaviour {
 	/// </summary>
 	/// <returns></returns>
 	public IEnumerator CreateMaze() {
-		currentMaze = Instantiate(mazeParentPrefab);
+		currentMaze = Instantiate(mazeParentPrefab).GetComponent<MazeData>();
+
+		currentMaze.tilesArray = new MazeTile[mazeSize, mazeSize];
 
 		// Create the maze
 		FillMaze();
 		GeneratePath();
 
 		// Starting and exit points
-		_tiles[0, 0].walls[2].GetComponent<Renderer>().enabled = false;
-		_tiles[mazeSize - 1, mazeSize - 1].walls[0].GetComponent<Renderer>().enabled = false;
+		currentMaze.tilesArray[0, 0].walls[2].GetComponent<Renderer>().enabled = false;
+		currentMaze.tilesArray[mazeSize - 1, mazeSize - 1].walls[0].GetComponent<Renderer>().enabled = false;
 
 		// wait 1 frame for colliders to update
 		yield return new WaitForEndOfFrame();
 
 		// build nav mesh
 		currentMaze.GetComponent<NavMeshSurface>().BuildNavMesh();
+
+		// place door
+		PlaceDoor();
 
 		// spawn enemies in
 		SpawnEnemies();
@@ -81,11 +94,13 @@ public class MazeGenerator : MonoBehaviour {
 
 		for (int i = 0; i < mazeSize; i++) {
 			for (int j = 0; j < mazeSize; j++) {
-				_tiles[i,j] = Instantiate(tilePrefab, currentMaze.transform).GetComponent<MazeTile>();
+				currentMaze.tilesArray[i,j] = Instantiate(tilePrefab, currentMaze.transform).GetComponent<MazeTile>();
 				// Set the coordinates here
-				_tiles[i,j].coord = new Coordinate(i, j);
+				currentMaze.tilesArray[i,j].coord = new Coordinate(i, j);
 
-				_tiles[i,j].transform.Translate(i * tileWidth, 0, j * tileLength);
+				currentMaze.tilesArray[i,j].transform.Translate(i * tileWidth, 0, j * tileLength);
+
+				currentMaze.tilesList.Add(currentMaze.tilesArray[i,j]);
 			}
 		}
 	}
@@ -97,10 +112,10 @@ public class MazeGenerator : MonoBehaviour {
 		// Variables for DFS
 		Stack<MazeTile> tileStack = new Stack<MazeTile>();
 		bool[,] visited = new bool[mazeSize, mazeSize];
-		System.Random random = new System.Random();
+		// System.Random random = new System.Random();
 
 		// Initialize DFS
-		tileStack.Push(_tiles[random.Next(0, mazeSize), random.Next(0, mazeSize)]);
+		tileStack.Push(currentMaze.tilesArray[random.Next(0, mazeSize), random.Next(0, mazeSize)]);
 
 		// Continue exploring paths until there are none remaining
 		while (tileStack.Count > 0) {
@@ -136,7 +151,7 @@ public class MazeGenerator : MonoBehaviour {
 			// check if found a direction
 			if (foundDirection) {
 				currentTile.BreakWall(direction);
-				MazeTile t = _tiles[c.x, c.z];
+				MazeTile t = currentMaze.tilesArray[c.x, c.z];
 
 				// Break the wall from the opposite side too
 				t.BreakWall((direction + 2) % 4);
@@ -156,7 +171,7 @@ public class MazeGenerator : MonoBehaviour {
 		// check board pattern
 		for (int x = 0; x < mazeSize; x++) {
 			for (int z = 0; z < mazeSize; z++) {
-				MazeTile tile = _tiles[x, z];
+				MazeTile tile = currentMaze.tilesArray[x, z];
 
 				// perform for all walls
 				for (int dir = 0; dir < 4; dir++) {
@@ -173,7 +188,7 @@ public class MazeGenerator : MonoBehaviour {
 						continue;
 					}
 
-					MazeTile neighbour = _tiles[coord.x, coord.z];
+					MazeTile neighbour = currentMaze.tilesArray[coord.x, coord.z];
 
 					// check other wall
 					if (neighbour.walls[(dir + 2) % 4] == null) {
@@ -184,6 +199,42 @@ public class MazeGenerator : MonoBehaviour {
 					tile.BreakWall(dir);
 				}
 			}
+		}
+	}
+
+	/// <summary>
+	/// Places a door
+	/// </summary>
+	private void PlaceDoor() {
+		bool placedWall = false;  
+
+		while (!placedWall) {
+			// pick tile
+			MazeTile doorTile = currentMaze.tilesList[random.Next(currentMaze.tilesList.Count)];
+			
+			// look for wall
+			int doorWallIndex = random.Next(4);
+			GameObject doorWall = null;
+			int attempts = 0;
+
+			while (doorWall == null && attempts < 5) {
+				doorWallIndex = (doorWallIndex + 5) % 4;
+				doorWall = doorTile.walls[doorWallIndex];
+				attempts++;
+			}
+
+			// didn't find a wall
+			if (attempts == 5) {
+				continue;
+			} 
+			
+			// found a wall
+
+			GameObject door = GameObject.Instantiate(doorPrefab, doorTile.transform, false);
+
+			door.transform.rotation = doorWall.transform.rotation;
+
+			placedWall = true;
 		}
 	}
 
@@ -200,7 +251,7 @@ public class MazeGenerator : MonoBehaviour {
 				continue;
 			}
 
-			Vector3 pos = _tiles[x, z].transform.position;
+			Vector3 pos = currentMaze.tilesArray[x, z].transform.position;
 
 			pos.y += 2;
 
@@ -214,9 +265,9 @@ public class MazeGenerator : MonoBehaviour {
 			int patrolX = random.Next(0, mazeSize);
 			int patrolZ = random.Next(0, mazeSize);
 
-			enemyScript.patrolList[0] = _tiles[patrolX, patrolZ].transform.position;
+			enemyScript.patrolList[0] = currentMaze.tilesArray[patrolX, patrolZ].transform.position;
 
-			enemyScript.patrolList[1] = _tiles[x, z].transform.position;
+			enemyScript.patrolList[1] = currentMaze.tilesArray[x, z].transform.position;
 		}
 	}
 
