@@ -50,7 +50,7 @@ public class MazeTile : MonoBehaviour {
 			_dayToggle = !_dayToggle;
 			_cooldown = true;
 
-			float light = _dayToggle ? 1f : 0.1f;
+			float light = _dayToggle ? 1f : 0.5f;
             SoundManager.instance.Day = _dayToggle;
 
 			for (int i = 0; i < walls.Length; i++) {
