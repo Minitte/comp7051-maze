@@ -40,6 +40,7 @@ public class GameProgressManager : MonoBehaviour
             EnemySave enemySave = currentSave.enemies[i];
 
             enemy.GetComponent<NavMeshAgent>().Warp(enemySave.position);
+            enemy.transform.position = enemySave.position;
 
             if (enemySave.dead) {
                 enemy.Die();

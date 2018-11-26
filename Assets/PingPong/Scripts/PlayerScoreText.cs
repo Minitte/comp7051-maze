@@ -36,4 +36,12 @@ public class PlayerScoreText : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// This function is called when the MonoBehaviour will be destroyed.
+	/// </summary>
+	void OnDestroy()
+	{
+		GameEventManager.OnGoal -= IncScore;
+	}
+
 }
