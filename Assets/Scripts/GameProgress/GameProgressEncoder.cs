@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GameProgressEncoder {
@@ -13,7 +14,12 @@ public class GameProgressEncoder {
     /// <param name="save">the save file to encode</param>
     /// <returns>A string containing the encoded save file</returns>
     public static string Encode(GameProgress save) {
-        return JsonUtility.ToJson(save);
+        if (save == null) {
+            Debug.Log("GameProgress given was null?");
+
+            return null;
+        }
+        return JsonUtility.ToJson(save, true);
     }
 
     /// <summary>
@@ -22,6 +28,14 @@ public class GameProgressEncoder {
     /// <param name="encoded">The encoded save file</param>
     /// <returns>A GameProgress object obtained from decoding the encoded string</returns>
     public static GameProgress Decode(string encoded) {
-        return JsonUtility.FromJson<GameProgress>(encoded);
+        GameProgress progress = null;
+
+        try {
+            progress = JsonUtility.FromJson<GameProgress>(encoded);
+        } catch (ArgumentException aex) {
+            Debug.Log("Failed to decode save!\n" + aex.Message);
+        }
+
+        return progress;
     }
 }

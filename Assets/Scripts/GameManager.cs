@@ -28,15 +28,24 @@ namespace dpaw.bcit.c7051.maze
 		/// </summary>
 		void Start()
 		{
-			gameProgressManager = GameProgressManager.instance;
+			// PlayerPrefs.SetString("Save", "");
+			gameProgressManager.LoadSave();
 
-			if (!gameProgressManager.currentSave.oldMaze) {
+			if (!gameProgressManager.loaded) {
 				mazeGenerator.BeginMazeGeneration("seed" + new System.Random().Next(0, 9999999));
 			} else {
 				mazeGenerator.OnGeneratingComplete += RestoreFromSave;
 
 				mazeGenerator.BeginMazeGeneration(gameProgressManager.currentSave.mazeSeed);
 			}
+		}
+
+		/// <summary>
+		/// This function is called when the MonoBehaviour will be destroyed.
+		/// </summary>
+		void OnDestroy()
+		{
+			mazeGenerator.OnGeneratingComplete -= RestoreFromSave;
 		}
 
 		/// <summary>

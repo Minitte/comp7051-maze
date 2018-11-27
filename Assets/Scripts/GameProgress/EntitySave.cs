@@ -28,10 +28,12 @@ public class EntitySave
     /// <summary>
     /// Dead flag
     /// </summary>
+    [SerializeField]
     public bool dead;
 
     /// <summary>
     /// Position of entity
     /// </summary>
+    [SerializeField]
     private float rotX, rotY, rotZ;
 }
