@@ -13,21 +13,34 @@ Camera:
 - right joystick on controller
 - Mouse
 
-Fog toggle:
-- Cross button on controller
-- F on keyboard
+Shoot ball:
+- Cross(X) Button on controller
+- Left click on mouse
+
+Flashlight toggle:
+- Square on controller
+- Z on keyboard
 
 Reset position:
 - Press down on the touch pad on controller
 - Home on keyboard
 
-No wall collision:
-- Triangle button on controller
-- Page Up on keyboard
+Music toggle:
+- DPad up on controller
+- M on keyboard
 
 Day/Night toggle:
-- Circle button on controller
+- DPad right on controller
 - G on keyboard
+
+Fog toggle:
+- DPad down on controller
+- F on keyboard
+
+No wall collision:
+- DPad left on controller
+- Page Up on keyboard
+
 
 ## Credits
 Textures.com for wall and floor texutures
