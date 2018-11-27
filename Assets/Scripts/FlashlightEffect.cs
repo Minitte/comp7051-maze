@@ -14,13 +14,13 @@ public class FlashlightEffect : MonoBehaviour {
     private bool _enabled;
 
     private void Start() {
-        Shader.SetGlobalVector("_FlashlightPoint", new Vector3(0, -10, 0)); // Hide flashlight
+        Shader.SetGlobalVector("_FlashlightPoint", new Vector3(0, 0, 0)); // Hide flashlight
     }
 
     private void Update() {
         if (Input.GetKeyDown(KeyCode.Z)) {
             if (_enabled) {
-                Shader.SetGlobalVector("_FlashlightPoint", new Vector3(0, -10, 0)); // Hide flashlight
+                Shader.SetGlobalVector("_FlashlightPoint", new Vector3(0, 0, 0)); // Hide flashlight
             }
             _enabled = !_enabled;
         }
@@ -34,8 +34,6 @@ public class FlashlightEffect : MonoBehaviour {
                 Shader.SetGlobalVector("_FlashlightPoint", rayHitInfo.point);
                 Shader.SetGlobalVector("_FlashlightDirection", mainCamera.transform.forward);
             }
-
-            //Shader.SetGlobalVector("_PlayerDir", mainCamera.transform.forward);
         }
     }
 }
