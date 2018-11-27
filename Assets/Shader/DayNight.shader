@@ -11,10 +11,6 @@ Shader "Custom/DayNight" {
 
         _AmbientLightColor("Ambient Light Color", Color) = (1,1,1,1)
         _AmbientLighIntensity("Ambient Light Intensity", Range(0.0, 1.0)) = 1.0
-
-		_DiffuseDirection("Diffuse Light Direction", Vector) = (0,0,0,0)
-		_DiffuseLightColor("Diffuse Light Color", Color) = (1,1,1,1)
-		_DiffuseLightIntensity("Diffuse Light Intensity", Range(0.0, 1.0)) = 1.0
     }
 
 	SubShader
@@ -43,12 +39,12 @@ Shader "Custom/DayNight" {
             {
                 float2 uv : TEXCOORD0;
                 SHADOW_COORDS(1) // put shadows data into TEXCOORD1
-                //fixed3 diff : COLOR0;
+                fixed3 diff : COLOR0;
                 fixed3 ambient : COLOR1;
                 float4 pos : SV_POSITION;
 				float3 worldPos : TEXCOORD2;
 				float4 screenPos : TEXCOORD3;
-				float3 worldNormal : NORMAL;
+				//float3 worldNormal : NORMAL;
             };
             v2f vert (appdata_base v)
             {
@@ -56,11 +52,11 @@ Shader "Custom/DayNight" {
                 o.pos = UnityObjectToClipPos(v.vertex); 
 				o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
                 o.uv = v.texcoord;
-                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+				half3 worldNormal = UnityObjectToWorldNormal(v.normal);
 				o.screenPos = ComputeScreenPos(o.pos);
-                //half nl = max(0, dot(worldNormal, _WorldSpaceLightPos0.xyz));
-                //o.diff = nl * _LightColor0.rgb;
-                o.ambient = ShadeSH9(half4(o.worldNormal,1));
+                half nl = max(0, dot(worldNormal, _WorldSpaceLightPos0.xyz));
+                o.diff = nl * _LightColor0.rgb;
+                o.ambient = ShadeSH9(half4(worldNormal,1));
                 // compute shadows data
                 TRANSFER_SHADOW(o)
                 return o;
@@ -70,7 +66,6 @@ Shader "Custom/DayNight" {
 
 			// Flashlight global properties
 			Vector _FlashlightPoint;
-			Vector _FlashlightDirection;
 
             fixed4 frag (v2f i) : SV_Target
             {
@@ -81,7 +76,7 @@ Shader "Custom/DayNight" {
 				fixed3 ambient = (unity_AmbientSky * _AmbientLighIntensity) * (_AmbientLightColor * _AmbientLighIntensity);
 
 				// Calculate diffuse light
-				fixed3 diffuse = _DiffuseLightColor * dot(-_DiffuseDirection, i.worldNormal);
+				fixed3 diffuse = i.diff;
                 
 				// Calculate final lighting
 				fixed3 lighting = saturate(diffuse) * shadow + ambient;
@@ -90,17 +85,17 @@ Shader "Custom/DayNight" {
 				// Position in screen coordinates (0 to 1)
 				float2 screenPosition = (i.screenPos.xy / i.screenPos.w);
 
-				// Project this pixel onto the closest point on the line
-				float3 playerToThis = i.worldPos - _WorldSpaceCameraPos;
-				float3 playerToPoint = _FlashlightPoint - _WorldSpaceCameraPos;
-				float3 projection = dot(playerToThis, playerToPoint) / pow(length(playerToPoint), 2) * playerToPoint;
-
 				// Additional lighting if the flashlight is toggled on
 				if (length(_FlashlightPoint) > 0) {
-					float dist = distance(screenPosition, float2(0.5, 0.5)) * 3; // Distance to center of screen position
-					col = saturate(lerp(col + 0.1, col, saturate(dist))); // Interpolate so that pixels closer to the center of the screen are brighter
-					return saturate(lerp(col + 0.2 , col, saturate((distance(i.worldPos, _WorldSpaceCameraPos + projection))))); // Interpolate so that pixels closer to the ray are brighter
+					// Project this pixel onto the closest point on the line
+					float3 playerToThis = i.worldPos - _WorldSpaceCameraPos;
+					float3 playerToPoint = _FlashlightPoint - _WorldSpaceCameraPos;
+					float3 projection = dot(playerToThis, playerToPoint) / pow(length(playerToPoint), 2) * playerToPoint;
+					float dist = distance(screenPosition, float2(0.5, 0.5)) * 5; // Distance to center of screen position
+					col = saturate(lerp(col + 0.2, col, saturate(dist))); // Interpolate so that pixels closer to the center of the screen are brighter
+					return saturate(lerp(col + 0.3 , col, saturate((distance(i.worldPos, _WorldSpaceCameraPos + projection))))); // Interpolate so that pixels closer to the ray are brighter
 				}
+
 				return col;
             }
             ENDCG

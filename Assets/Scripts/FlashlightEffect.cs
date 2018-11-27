@@ -18,7 +18,7 @@ public class FlashlightEffect : MonoBehaviour {
     }
 
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.Z)) {
+        if (Input.GetButtonDown("Flashlight")) {
             if (_enabled) {
                 Shader.SetGlobalVector("_FlashlightPoint", new Vector3(0, 0, 0)); // Hide flashlight
             }
