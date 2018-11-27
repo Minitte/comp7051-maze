@@ -74,20 +74,40 @@ Shader "Custom/DayNight" {
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
                 fixed shadow = SHADOW_ATTENUATION(i);
-				
+
 				// Calculate ambient light
 				fixed3 ambient = (unity_AmbientSky * _AmbientLighIntensity) * (_AmbientLightColor * _AmbientLighIntensity);
 
 				// Calculate diffuse light
-				fixed3 diffuse = _DiffuseLightColor * _DiffuseLightIntensity * dot(_DiffuseDirection, i.worldNormal);
+				fixed3 diffuse = _DiffuseLightColor * dot(-_DiffuseDirection, i.worldNormal);
 
+                float3 playerToThis = i.worldPos - _WorldSpaceCameraPos;
+                float3 playerToPoint = _FlashlightPoint - _WorldSpaceCameraPos;
+
+                float3 projection = dot(playerToThis, playerToPoint) / pow(length(playerToPoint), 2) * playerToPoint;
+
+                
+
+                
+
+                //float4 int1 = lerp(col, 0, saturate(normalize(dot(_FlashlightDirection, i.worldNormal))));
+                //float4 int2 = lerp(saturate(int1 + 0.5), int1, saturate(distance(_WorldSpaceCameraPos, i.worldPos)));
+
+                //return int2;
+                
 				// Calculate final lighting
 				fixed3 lighting = saturate(diffuse) * shadow + ambient;
                 col.rgb *= lighting;
 
 				// Pixels closer to the flashlight point become brighter
 				float flashlight = lerp(1, 0, distance(_FlashlightPoint, i.worldPos));
-                return lerp(col, saturate(col + 0.5), saturate(flashlight));
+
+                if (distance(i.worldPos, _WorldSpaceCameraPos + projection) < 0.5) {
+                    return saturate(col + 0.1);
+                } else {
+                    return col;
+                }
+                return lerp(col, saturate(col + 1), saturate(flashlight));
             }
             ENDCG
         }
