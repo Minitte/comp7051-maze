@@ -5,6 +5,11 @@ using UnityEngine;
 public class MazeData : MonoBehaviour {
 
 	/// <summary>
+	/// Seed of this maze
+	/// </summary>
+	public string seed;
+
+	/// <summary>
 	/// List of enemies
 	/// </summary>
 	public List<Enemy> enemies;

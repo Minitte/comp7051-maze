@@ -36,4 +36,13 @@ public class ScoreManager : MonoBehaviour {
         currentScore++;
         scoreText.text = currentScore.ToString();
     }
+
+    /// <summary>
+    /// Sets the score and updates the text accordingly
+    /// </summary>
+    /// <param name="score"></param>
+    public void SetScore(int score) {
+        currentScore = score;
+        scoreText.text = currentScore.ToString();
+    }
 }

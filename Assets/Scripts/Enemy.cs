@@ -52,6 +52,12 @@ public class Enemy : MonoBehaviour {
 	public Vector3[] patrolList;
 
 	/// <summary>
+	/// if the enemy is dead
+	/// </summary>
+	/// <value></value>
+	public bool dead { get { return _dead; } }
+
+	/// <summary>
 	/// nav agent 
 	/// </summary>
 	private NavMeshAgent _agent;	
@@ -103,6 +109,7 @@ public class Enemy : MonoBehaviour {
 	/// </summary>
 	void LateUpdate() {
         if (_dead) {
+			_agent.isStopped = true;
             return;
         }
 		switch (state) {
@@ -190,6 +197,8 @@ public class Enemy : MonoBehaviour {
     /// Kills this enemy.
     /// </summary>
     public void Die() {
+		_agent = GetComponent<NavMeshAgent>();
+		
         // Unsubscribe from events
         aggroArea.OnFoundTarget -= Chase;
         aggroArea.OnTargetLost -= StopChasing;
@@ -199,6 +208,7 @@ public class Enemy : MonoBehaviour {
 
         // Reset path
         _agent.ResetPath();
+
         _dead = true;
     }
 }

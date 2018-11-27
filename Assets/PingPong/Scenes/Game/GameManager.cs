@@ -96,6 +96,14 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// This function is called when the MonoBehaviour will be destroyed.
+	/// </summary>
+	void OnDestroy()
+	{
+		GameEventManager.OnGoal -= SpawnBallOnGoal;
+	}
+
 	private void SpawnBallOnGoal(int scoringTeam)
 	{
 		Scores[scoringTeam]++;

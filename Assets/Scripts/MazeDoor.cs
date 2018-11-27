@@ -13,6 +13,8 @@ public class MazeDoor : MonoBehaviour {
 	{
 		if (other.CompareTag("Player")) 
 		{
+			GameObject.Find("Maze Game Manager").GetComponent<dpaw.bcit.c7051.maze.GameManager>().SaveState();
+
 			SceneManager.LoadScene("Game");
 		}
 	}

@@ -8,7 +8,9 @@ using UnityEngine.AI;
 /// </summary>
 public class MazeGenerator : MonoBehaviour {
 
-	private static System.Random random = new System.Random();
+	public delegate void GenerationEvent(MazeData maze);
+
+	public event GenerationEvent OnGeneratingComplete;
 
 	[Header("Prefabs")]
 
@@ -44,22 +46,42 @@ public class MazeGenerator : MonoBehaviour {
 	/// </summary>
 	public int mazeSize;
 
-	//private MazeTile[,] currentMaze.tilesArray;
+	/// <summary>
+	/// random object reference
+	/// </summary>
+	private System.Random random;
 
 	/// <summary>
-	/// Start is called on the frame when a script is enabled just before
-	/// any of the Update methods is called the first time.
+	/// indicates if the maze generator is currently generating a maze
 	/// </summary>
-	void Start() {
-		StartCoroutine(CreateMaze());
+	private bool working;
+
+	/// <summary>
+	/// Begins map generation with current seed. If none given, a random one is picked.
+	/// </summary>
+	/// <param name="seed"></param>
+	public void BeginMazeGeneration(string seed = null) {
+		Debug.Assert(working == false, "A maze is already generating!");
+
+		StartCoroutine(CreateMaze(seed));
 	}
 
 	/// <summary>
 	/// Creates a maze
 	/// </summary>
 	/// <returns></returns>
-	public IEnumerator CreateMaze() {
+	private IEnumerator CreateMaze(string seed = null) {
+		working = true;
+
+		if (seed == null) {
+			random = new System.Random();
+		} else {
+			random = new System.Random(seed.GetHashCode());
+		}
+
 		currentMaze = Instantiate(mazeParentPrefab).GetComponent<MazeData>();
+
+		currentMaze.seed = seed;
 
 		currentMaze.tilesArray = new MazeTile[mazeSize, mazeSize];
 
@@ -82,6 +104,13 @@ public class MazeGenerator : MonoBehaviour {
 
 		// spawn enemies in
 		SpawnEnemies();
+
+		// trigger event
+		if (OnGeneratingComplete != null) {
+			OnGeneratingComplete(currentMaze);
+		}
+
+		working = false;
 	}
 
 	/// <summary>
@@ -112,7 +141,6 @@ public class MazeGenerator : MonoBehaviour {
 		// Variables for DFS
 		Stack<MazeTile> tileStack = new Stack<MazeTile>();
 		bool[,] visited = new bool[mazeSize, mazeSize];
-		// System.Random random = new System.Random();
 
 		// Initialize DFS
 		tileStack.Push(currentMaze.tilesArray[random.Next(0, mazeSize), random.Next(0, mazeSize)]);
@@ -238,9 +266,10 @@ public class MazeGenerator : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Spawn enemies
+	/// </summary>
 	private void SpawnEnemies() {
-		System.Random random = new System.Random();
-
 		for (int i = 0; i < (int)mazeSize; i++) {
 			int x = random.Next(0, mazeSize);
 			int z = random.Next(0, mazeSize);
@@ -258,6 +287,8 @@ public class MazeGenerator : MonoBehaviour {
 			GameObject enemyGO = Instantiate(enemyPrefab, pos, Quaternion.identity); 
 
 			Enemy enemyScript = enemyGO.GetComponent<Enemy>();
+
+			currentMaze.enemies.Add(enemyScript);
 
 			// setting up patrol destinations
 			enemyScript.patrolList = new Vector3[2];
