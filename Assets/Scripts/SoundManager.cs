@@ -150,6 +150,10 @@ public class SoundManager : MonoBehaviour {
 
         // Fog halves the volume
         if (_fog) {
+            // Clamp it
+            if (volume > 1f) {
+                volume = 1f;
+            }
             volume *= 0.5f;
         }
 
