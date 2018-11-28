@@ -1,5 +1,5 @@
 # comp7051-maze
-COMP 7051 Assignment 2
+COMP 7051 Assignment 3
 
 This assignment's goal is to create a maze game and to demonstrate the usage of models, animation and shaders learned in class.
 
