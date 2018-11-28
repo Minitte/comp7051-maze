@@ -201,12 +201,12 @@ public class Player : MonoBehaviour {
     /// Results are put into nearbyColliders array.
     /// </summary>
     private void CheckNearbyColliders() {
-        Physics.OverlapSphereNonAlloc(transform.position, 15f, nearbyColliders, 1 << 10); // Get nearby colliders
+        Physics.OverlapSphereNonAlloc(transform.position, 15f, nearbyColliders, 1 << LayerMask.NameToLayer("Enemy")); // Get nearby colliders
 
         // Find the closest enemy distance
         float nearestDistance = float.MaxValue;
         foreach (Collider c in nearbyColliders) {
-            if (c != null) {
+            if (c != null && !c.CompareTag("Aggro Area")) {
                 float distance = Vector3.Distance(c.transform.position, transform.position);
                 if (distance < nearestDistance) {
                     nearestDistance = distance;
