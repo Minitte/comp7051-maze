@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SoundManager : MonoBehaviour {
 
@@ -33,6 +34,11 @@ public class SoundManager : MonoBehaviour {
     /// List of currently playing audio clips.
     /// </summary>
     public List<AudioClip> activeClips;
+
+    /// <summary>
+    /// Flag for if music is on or not.
+    /// </summary>
+    public Text musicFlag;
 
     /// <summary>
     /// The current music clip that should be playing.
@@ -83,11 +89,18 @@ public class SoundManager : MonoBehaviour {
         // Play day music on startup
         _day = true;
         PlayMusic(dayMusic);
+        
     }
 
     private void Update() {
         if (Input.GetButtonDown("ToggleMusic")) {
             ToggleMusic();
+        }
+
+        if (audioSource.isPlaying) {
+            musicFlag.text = "Music is Playing: " + audioSource.volume;
+        } else {
+            musicFlag.text = "Music is Paused";
         }
 
         AdjustMusicVolume();
